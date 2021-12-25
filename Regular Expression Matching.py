@@ -6,46 +6,20 @@ s = list(s)
 p = 'a*a'
 p = list(p)
 
-key = deque(p)
+def isMatch(text, pattern):
 
-query = deque(s)
+    if not pattern:
+        return not text
 
-container = None
+    first_match = bool(text) and pattern[0] in {text[0], '.'}
 
-while len(query) != 0 and len(key) != 0:
+    if len(pattern) >= 2 and pattern[1] == '*':
 
-    k = key[0]
-    q = query[0]
-
-    # raw check
-    if k == q:
-        container = k
-        key.popleft(), query.popleft()
-    # check '.'
-    elif k == '.':
-        container = k
-        key.popleft(), query.popleft()
-    # check '*'
-    elif k == '*':
-        k = container
-        if k != '.':
-            while(query[0]==k):
-                query.popleft()
-                if len(query) == 0: break
-        else:
-            query.clear()
-        key.popleft()
+        return isMatch(text, pattern[2:]) or \
+                        (first_match and isMatch(text[1:], pattern))
+    
     else:
-        if key[1] == '*':
-            key.popleft()
-            key.popleft()
-            query.popleft()
-        else:
-            break
+        return first_match and isMatch(text[1:], pattern[1:])
 
-if len(key) != 0 or len(query) != 0:
-    print(False)
-else:
-    print(True)
-
-
+out = isMatch(s, p)
+print(out)
